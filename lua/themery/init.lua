@@ -5,6 +5,7 @@ local api = vim.api
 local buf, win
 local resultsStart = 2
 local position = 0
+local themeConfigfile = "~/.config/nvim/lua/settings/theme.lua"
 local themes = {"gruvbox", "tokyonight", "kanagawa", "kanagawa-dragon"}
 local currentThemeIndex = -1
 
@@ -89,13 +90,52 @@ local function closeWindow()
   api.nvim_win_close(win, true)
 end
 
+local function saveTheme()
+  local file = io.open(themeConfigfile, "r")
+
+  if file == nil then
+    print("Themery error: Could not open file for read")
+    return
+  end
+
+  local content = file:read("*all")
+
+  local start_marker = "-- Themery block"
+  local end_marker = "-- end themery"
+
+  local start_pos, end_pos = content:find(start_marker .. "\n(.+)\n" .. end_marker)
+
+  if not start_pos or not end_pos then
+    print("Could not find markers in config file")
+    return
+  end
+
+  local configToWrite = "-- This block will be replaced by Themery.\n"
+  configToWrite = configToWrite.."vim.cmd(\"colorscheme "..themes[position-1].."\")"
+
+  local replaced_content = content:sub(1, start_pos-1)..start_marker.."\n"
+    .. configToWrite .. "\n"..end_marker.."\n" .. content:sub(end_pos+1)
+
+  local outfile = io.open(themeConfigfile, "w")
+
+  if outfile == nil then
+    print("Error: Could not open file for writing")
+    return
+  end
+
+  outfile:write(replaced_content)
+  outfile:close()
+
+  closeWindow()
+end
+
 local function setMappings()
   local mappings = {
     k = 'updateView(-1)',
     j = 'updateView(1)',
     q = 'closeWindow()',
     ['<Esc>'] = 'closeWindow()',
-    ['<cr>'] = 'closeWindow()',
+    ['<cr>'] = 'saveTheme()',
   }
 
   for k,v in pairs(mappings) do
@@ -116,5 +156,6 @@ return {
   greet = greet,
   pop = pop,
   updateView = updateView,
-  closeWindow = closeWindow
+  closeWindow = closeWindow,
+  saveTheme = saveTheme,
 }
