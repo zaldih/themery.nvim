@@ -9,18 +9,31 @@ local position = 0
 local currentThemeIndex = -1
 local currentThemeName = ""
 
+local function normalizeThemesConfig()
+  for i,v in ipairs(config.themes) do
+    if(type(v) == "string") then
+      config.themes[i] = {
+        name = v,
+        colorscheme = v
+      }
+    end
+  end
+end
+
 local function setup(userConfig)
   config = vim.tbl_deep_extend("keep", userConfig or {}, {
     themes = {},
     themesConfigFile = "",
     livePreview = true,
   })
+
+  normalizeThemesConfig()
 end
 
 local function loadActualThemeConfig()
   currentThemeName = vim.g.colors_name
   for k in pairs(config.themes) do
-    if currentThemeName == config.themes[k] then
+    if currentThemeName == config.themes[k].colorscheme then
       currentThemeIndex = k
       position = k + resultsStart - 1
       return
@@ -73,9 +86,18 @@ local function printNoThemesLoaded()
 end
 
 local function setColorscheme(theme)
+  if theme.before then
+    local fn, err = load(theme.before)
+    if err then
+      print("Themery error: "..err)
+      return false
+    end
+    if fn then fn() end
+  end
+
   local ok, _ = pcall(
     vim.cmd,
-    "colorscheme "..theme
+    "colorscheme "..theme.colorscheme
   )
 
   -- check if the colorscheme was loaded successfully
@@ -84,6 +106,15 @@ local function setColorscheme(theme)
     -- Restore previus
     vim.cmd('colorscheme '..currentThemeName)
     return false
+  end
+
+  if theme.after then
+    local fn, err = load(theme.after)
+    if err then
+      print("Themery error: "..err)
+      return false
+    end
+    if fn then fn() end
   end
 
   return true
@@ -101,25 +132,24 @@ local function updateView(direction)
     return
   end
 
-
-
   local resultToPrint = {}
-  for k in pairs(config.themes) do
+  for i in ipairs(config.themes) do
     local prefix = '  '
 
-    if currentThemeIndex == k then
+    if currentThemeIndex == i then
       prefix = '> '
     end
 
-    resultToPrint[k] = prefix..config.themes[k]
+    resultToPrint[i] = prefix..config.themes[i].name
   end
 
   api.nvim_buf_set_lines(buf, 1, -1, false, resultToPrint)
   api.nvim_win_set_cursor(win, {position, 0})
-  print("Selected: "..config.themes[position-1])
+
   if config.livePreview then
     setColorscheme(config.themes[position-1])
   end
+
   vim.api.nvim_buf_set_option(buf, 'modifiable', false)
 end
 
@@ -128,6 +158,7 @@ local function closeWindow()
 end
 
 local function saveTheme()
+  local theme = config.themes[position-1]
   local file = io.open(config.themesConfigfile, "r")
 
   if file == nil then
@@ -147,11 +178,28 @@ local function saveTheme()
     return
   end
 
-  local configToWrite = "-- This block will be replaced by Themery.\n"
-  configToWrite = configToWrite.."vim.cmd(\"colorscheme "..config.themes[position-1].."\")"
+  local beforeCode = ""
+  local afterCode = ""
 
-  local replaced_content = content:sub(1, start_pos-1)..start_marker.."\n"
-    .. configToWrite .. "\n"..end_marker.."\n" .. content:sub(end_pos+1)
+  if theme.before then
+    beforeCode = utils.trimStartSpaces(theme.before).."\n"
+  end
+
+  if theme.after then
+    afterCode = "\n"..utils.trimStartSpaces(theme.after)
+  end
+
+  local configToWrite = "-- This block will be replaced by Themery.\n"
+  configToWrite = configToWrite..beforeCode
+  configToWrite = configToWrite.."vim.cmd(\"colorscheme "
+  configToWrite = configToWrite..theme.colorscheme.."\")\n"
+  configToWrite = configToWrite..afterCode
+
+  local replaced_content = content:sub(1, start_pos-1)
+    ..start_marker.."\n"
+    ..configToWrite
+    ..end_marker
+    ..content:sub(end_pos+1)
 
   local outfile = io.open(config.themesConfigfile, "w")
 
@@ -163,7 +211,7 @@ local function saveTheme()
   outfile:write(replaced_content)
   outfile:close()
 
-  currentThemeName = config.themes[position-1]
+  currentThemeName = config.themes[position-1].colorscheme
   currentThemeIndex = position - 1
   closeWindow()
 end
@@ -186,7 +234,19 @@ end
 
 local function pop()
   setup({
-    themes = {"gruvbox", "tokyonight", "kanagawa", "kanagawa-dragon"},
+    themes = {"tokyonight", {
+      name = "gruvbox dark",
+      colorscheme = "gruvbox",
+      before = [[
+        vim.opt.background="dark"
+      ]]
+    }, {
+      name = "gruvbox light",
+      colorscheme = "gruvbox",
+      after = [[
+        vim.opt.background="light"
+      ]]
+      }, "kanagawa", "kanagawa-dragon"},
     themesConfigfile = "~/.config/nvim/lua/settings/theme.lua",
   }) -- TEMP
   loadActualThemeConfig()

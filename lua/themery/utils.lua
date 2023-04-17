@@ -6,6 +6,12 @@ local function centerHorizontal(str)
   return string.rep(' ', shift) .. str
 end
 
+local function trimStartSpaces(s)
+  return string.gsub(s, "[^%S\n]+", "")
+end
+
 return {
-  centerHorizontal = centerHorizontal;
+  centerHorizontal = centerHorizontal,
+  trimStartSpaces = trimStartSpaces,
 }
+
