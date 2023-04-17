@@ -2,17 +2,25 @@ local greet = require("themery.module")
 local utils = require("themery.utils")
 
 local api = vim.api
+local config = {}
 local buf, win
 local resultsStart = 2
 local position = 0
-local themeConfigfile = "~/.config/nvim/lua/settings/theme.lua"
-local themes = {"gruvbox", "tokyonight", "kanagawa", "kanagawa-dragon"}
 local currentThemeIndex = -1
+local currentThemeName = ""
 
-local function loadActualConfig()
-  local currentThemeName = vim.g.colors_name
-  for k in pairs(themes) do
-    if currentThemeName == themes[k] then
+local function setup(userConfig)
+  config = vim.tbl_deep_extend("keep", userConfig or {}, {
+    themes = {},
+    themesConfigFile = "",
+    livePreview = true,
+  })
+end
+
+local function loadActualThemeConfig()
+  currentThemeName = vim.g.colors_name
+  for k in pairs(config.themes) do
+    if currentThemeName == config.themes[k] then
       currentThemeIndex = k
       position = k + resultsStart - 1
       return
@@ -58,32 +66,61 @@ local function openWindow()
   api.nvim_buf_set_lines(buf, 0, -1, false, { title })
 end
 
+local function printNoThemesLoaded()
+  local text = "No temes configured. See :help Themery"
+  api.nvim_buf_set_lines(buf, 1, -1, false, { text })
+
+end
+
+local function setColorscheme(theme)
+  local ok, _ = pcall(
+    vim.cmd,
+    "colorscheme "..theme
+  )
+
+  -- check if the colorscheme was loaded successfully
+  if not ok then
+    print("Themery error: Could not load theme: "..theme)
+    -- Restore previus
+    vim.cmd('colorscheme '..currentThemeName)
+    return false
+  end
+
+  return true
+end
+
 local function updateView(direction)
-  vim.api.nvim_buf_set_option(buf, 'modifiable', true)
   position = position + direction
+  vim.api.nvim_buf_set_option(buf, 'modifiable', true)
   if position < resultsStart then position = resultsStart end
+  if position > #config.themes + 1 then position = #config.themes + 1 end
+
+  if #config.themes == 0 then
+    printNoThemesLoaded()
+    vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+    return
+  end
+
+
 
   local resultToPrint = {}
-
-  if #themes == 0 then table.insert(themes, '') end
-  for k in pairs(themes) do
+  for k in pairs(config.themes) do
     local prefix = '  '
 
     if currentThemeIndex == k then
       prefix = '> '
     end
 
-    resultToPrint[k] = prefix..themes[k]
+    resultToPrint[k] = prefix..config.themes[k]
   end
 
-  if position > #themes + 1 then position = #themes + 1 end
-
   api.nvim_buf_set_lines(buf, 1, -1, false, resultToPrint)
-  vim.api.nvim_buf_set_option(buf, 'modifiable', false)
   api.nvim_win_set_cursor(win, {position, 0})
-
-  print("Selected: "..themes[position-1])
-  vim.cmd('colorscheme '..themes[position-1])
+  print("Selected: "..config.themes[position-1])
+  if config.livePreview then
+    setColorscheme(config.themes[position-1])
+  end
+  vim.api.nvim_buf_set_option(buf, 'modifiable', false)
 end
 
 local function closeWindow()
@@ -91,7 +128,7 @@ local function closeWindow()
 end
 
 local function saveTheme()
-  local file = io.open(themeConfigfile, "r")
+  local file = io.open(config.themesConfigfile, "r")
 
   if file == nil then
     print("Themery error: Could not open file for read")
@@ -111,12 +148,12 @@ local function saveTheme()
   end
 
   local configToWrite = "-- This block will be replaced by Themery.\n"
-  configToWrite = configToWrite.."vim.cmd(\"colorscheme "..themes[position-1].."\")"
+  configToWrite = configToWrite.."vim.cmd(\"colorscheme "..config.themes[position-1].."\")"
 
   local replaced_content = content:sub(1, start_pos-1)..start_marker.."\n"
     .. configToWrite .. "\n"..end_marker.."\n" .. content:sub(end_pos+1)
 
-  local outfile = io.open(themeConfigfile, "w")
+  local outfile = io.open(config.themesConfigfile, "w")
 
   if outfile == nil then
     print("Error: Could not open file for writing")
@@ -126,6 +163,8 @@ local function saveTheme()
   outfile:write(replaced_content)
   outfile:close()
 
+  currentThemeName = config.themes[position-1]
+  currentThemeIndex = position - 1
   closeWindow()
 end
 
@@ -146,13 +185,18 @@ local function setMappings()
 end
 
 local function pop()
-  loadActualConfig()
+  setup({
+    themes = {"gruvbox", "tokyonight", "kanagawa", "kanagawa-dragon"},
+    themesConfigfile = "~/.config/nvim/lua/settings/theme.lua",
+  }) -- TEMP
+  loadActualThemeConfig()
   openWindow()
   setMappings()
   updateView(0)
 end
 
 return {
+  setup = setup,
   greet = greet,
   pop = pop,
   updateView = updateView,
