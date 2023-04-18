@@ -11,7 +11,7 @@ local currentThemeName = ""
 local resultsStart = constants.RESULTS_TOP_MARGIN
 
 local function loadActualThemeConfig()
-  local themeList = config.settings.themes;
+  local themeList = config.getSettings().themes;
   currentThemeName = vim.g.colors_name
 
   for k in pairs(themeList) do
@@ -59,7 +59,7 @@ local function setColorscheme(theme)
 end
 
 local function updateView(direction)
-  local themeList = config.settings.themes;
+  local themeList = config.getSettings().themes;
   position = position + direction
   vim.api.nvim_buf_set_option(window.getBuf(), 'modifiable', true)
   if position < resultsStart then position = resultsStart end
@@ -85,7 +85,7 @@ local function updateView(direction)
   api.nvim_buf_set_lines(window.getBuf(), 1, -1, false, resultToPrint)
   api.nvim_win_set_cursor(window.getWin(), {position, 0})
 
-  if config.settings.livePreview then
+  if config.getSettings().livePreview then
     setColorscheme(themeList[position-1])
   end
 
@@ -93,7 +93,7 @@ local function updateView(direction)
 end
 
 local function revertTheme()
-  setColorscheme(config.settings.themes[currentThemeIndex])
+  setColorscheme(config.getSettings().themes[currentThemeIndex])
 end
 
 local function open()
@@ -112,10 +112,9 @@ local function closeAndRevert()
 end
 
 local function closeAndSave()
-  local theme = config.settings.themes[position-1]
+  local theme = config.getSettings().themes[position-1]
   persistence.saveTheme(theme)
   window.closeWindow()
-  print(constants.MSG_INFO.THEME_SAVED)
 end
 
 return {

@@ -20,7 +20,7 @@ local function setMappings()
 end
 
 local function pop()
-  local settings = config.setup({
+  config.setup({
     themes = {"tokyonight", {
       name = "gruvbox dark",
       colorscheme = "gruvbox",
@@ -36,7 +36,6 @@ local function pop()
       }, "kanagawa", "kanagawa-dragon", "kanagawa-lotus"},
     themesConfigFile = "~/.config/nvim/lua/settings/theme.lua",
   }) -- TEMP
-  config.settings = settings -- Need refactor. Required for update reference.
 
   controller.open()
   setMappings()

@@ -19,7 +19,11 @@ local function setup(userConfig)
   return settings
 end
 
+local getSettings = function()
+  return settings
+end
+
 return {
-  settings = settings,
   setup = setup,
+  getSettings = getSettings,
 }
