@@ -20,7 +20,7 @@ local function setMappings()
   end
 end
 
-local function pop()
+local function themery()
   if not config.isConfigured() then
     print(constants.MSG_INFO.NO_SETUP)
     return
@@ -31,8 +31,8 @@ local function pop()
 end
 
 return {
-  pop = pop,
-  open = controller.open,
+  themery = themery,
+  setup = config.setup,
   closeAndRevert = controller.closeAndRevert,
   closeAndSave = controller.closeAndSave,
   updateView = controller.updateView,
