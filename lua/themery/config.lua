@@ -20,7 +20,7 @@ local function setup(userConfig)
 end
 
 local function isConfigured()
-  return next(settings) == not nil
+  return next(settings) ~= nil
 end
 
 local getSettings = function()
