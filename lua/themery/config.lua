@@ -19,11 +19,16 @@ local function setup(userConfig)
   return settings
 end
 
+local function isConfigured()
+  return next(settings) == not nil
+end
+
 local getSettings = function()
   return settings
 end
 
 return {
   setup = setup,
+  isConfigured = isConfigured,
   getSettings = getSettings,
 }

@@ -9,6 +9,7 @@ local DEFAULT_SETTINGS = {
 local RESULTS_TOP_MARGIN = 2
 
 local MSG_INFO = {
+  NO_SETUP = "Themery is not configured. See installation guide.",
   NO_THEMES_CONFIGURED = "No themes configured. See :help Themery",
   THEME_SAVED = "Theme saved",
 }

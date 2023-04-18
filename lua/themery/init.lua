@@ -1,6 +1,7 @@
 local controller = require("themery.controller")
 local window = require("themery.window")
 local config = require("themery.config")
+local constants = require("themery.constants")
 local api = vim.api
 
 local function setMappings()
@@ -20,22 +21,10 @@ local function setMappings()
 end
 
 local function pop()
-  config.setup({
-    themes = {"tokyonight", {
-      name = "gruvbox dark",
-      colorscheme = "gruvbox",
-      before = [[
-        vim.opt.background="dark"
-      ]]
-    }, {
-      name = "gruvbox light",
-      colorscheme = "gruvbox",
-      after = [[
-        vim.opt.background="light"
-      ]]
-      }, "kanagawa", "kanagawa-dragon", "kanagawa-lotus"},
-    themesConfigFile = "~/.config/nvim/lua/settings/theme.lua",
-  }) -- TEMP
+  if not config.isConfigured() then
+    print(constants.MSG_INFO.NO_SETUP)
+    return
+  end
 
   controller.open()
   setMappings()
