@@ -3,7 +3,7 @@ local config = require("themery.config")
 local utils = require("themery.utils")
 
 local function saveTheme(theme)
-  local configFilePath = config.getSettings().themesConfigFile
+  local configFilePath = config.getSettings().themeConfigFile
   local file = io.open(configFilePath , "r")
 
   if file == nil then

@@ -13,9 +13,16 @@ local function normalizeThemeList()
   end
 end
 
+local function normalizePaths()
+  local path = settings.themeConfigFile
+  local normalizedPath = vim.fn.fnamemodify(path, ":p") -- Get Full path
+  settings.themeConfigFile = normalizedPath
+end
+
 local function setup(userConfig)
   settings = vim.tbl_deep_extend("keep", userConfig or {}, constants.DEFAULT_SETTINGS)
   normalizeThemeList()
+  normalizePaths()
   return settings
 end
 

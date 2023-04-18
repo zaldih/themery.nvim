@@ -54,7 +54,7 @@ Let's get down to the nitty-gritty first. Anywhere in your configuration put thi
 -- Minimal config
 require("themary").setup({
   themes = {"gruvbox", "ayu", ...}, -- Your list of installed colorschemes
-  themesConfigfile = "/home/user/.config/nvim/lua/settings/theme.lua", -- Described below
+  themeConfigfile = "~/.config/nvim/lua/settings/theme.lua", -- Described below
   livePreview = true, -- Apply theme while browsing. Default to true.
 })
 ```
