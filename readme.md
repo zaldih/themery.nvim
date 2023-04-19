@@ -33,9 +33,26 @@ Many things can change at any time and the plugin may not be stable.
 
 ### To-do
 
+- Add categories (Light/Dark).
+- Expose the API to be able to switch between themes without opening the menu.
+
 In the future I would like the plugin to become a complete theme manager so that themes can be tested on the fly before installing them or browsing through a community repertoire.
 
 ## Installation
+
+Choose one of these options and continue with "Configuration".
+
+### vim-plug
+
+```
+Plug 'zaldih/themery.nvim'
+```
+
+### Packer
+
+```
+use 'zaldih/themery.nvim'
+```
 
 ## Configuration
 
@@ -126,7 +143,7 @@ To do this you have to put this code snippet wherever you see fit (i recommend i
 ```lua
 -- Themery block
   -- This block will be replaced by Themery.
--- end themery
+-- end themery block
 ```
 
 Remember the themeConfigfile option? You will have to put the path to the file where you have written the above.
@@ -139,7 +156,7 @@ Persistence also works fine if you don't have the configuration in a Lua file. Y
 ```vim
 lua << EOF
 -- Themery block
--- end themery
+-- end themery block
 EOF
 ```
 

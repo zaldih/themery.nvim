@@ -14,7 +14,7 @@ local function saveTheme(theme)
   local content = file:read("*all")
 
   local start_marker = "-- Themery block"
-  local end_marker = "-- end themery"
+  local end_marker = "-- end themery block"
 
   local start_pos, end_pos = content:find(start_marker .. "\n(.+)\n" .. end_marker)
 
@@ -40,7 +40,7 @@ local function saveTheme(theme)
   configToWrite = configToWrite..theme.colorscheme.."\")\n"
   configToWrite = configToWrite..afterCode
 
-  local replaced_content = content:sub(1, start_pos-1)
+local replaced_content = content:sub(1, start_pos-1)
     ..start_marker.."\n"
     ..configToWrite
     ..end_marker
