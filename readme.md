@@ -71,7 +71,7 @@ Let's get down to the nitty-gritty first. Anywhere in your configuration put thi
 -- Minimal config
 require("themary").setup({
   themes = {"gruvbox", "ayu", ...}, -- Your list of installed colorschemes
-  themeConfigfile = "~/.config/nvim/lua/settings/theme.lua", -- Described below
+  themeConfigFile = "~/.config/nvim/lua/settings/theme.lua", -- Described below
   livePreview = true, -- Apply theme while browsing. Default to true.
 })
 ```
@@ -146,7 +146,7 @@ To do this you have to put this code snippet wherever you see fit (i recommend i
 -- end themery block
 ```
 
-Remember the themeConfigfile option? You will have to put the path to the file where you have written the above.
+Remember the themeConfigFile option? You will have to put the path to the file where you have written the above.
 This way Themery will write the configuration there.
 
 #### Using .vim config?
