@@ -168,4 +168,4 @@ Press `<cr>` for apply theme and save. `q` or `<Esc>` for exit.
 
 ## License
 
-Pending
+GPL
