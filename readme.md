@@ -69,7 +69,7 @@ Let's get down to the nitty-gritty first. Anywhere in your configuration put thi
 
 ```lua
 -- Minimal config
-require("themary").setup({
+require("themery").setup({
   themes = {"gruvbox", "ayu", ...}, -- Your list of installed colorschemes
   themeConfigFile = "~/.config/nvim/lua/settings/theme.lua", -- Described below
   livePreview = true, -- Apply theme while browsing. Default to true.
@@ -84,7 +84,7 @@ Let's see how we can customise the list a bit...
 
 ```lua
 -- Set custom name to the list
-require("themary").setup({
+require("themery").setup({
   themes = {{
     name = "Day",
     colorscheme = "kanagawa-lotus",
@@ -109,7 +109,7 @@ For example, gruvbox uses a variable to switch between light and dark mode.
 
 ```lua
 -- Using before and after.
-require("themary").setup({
+require("themery").setup({
   themes = {{
     name = "Gruvbox dark",
     colorscheme = "gruvbox",

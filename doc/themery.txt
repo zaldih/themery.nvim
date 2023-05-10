@@ -43,7 +43,7 @@ described below:
 Let's get down to the nitty-gritty first. Anywhere in your configuration put
 this:
 
-  require("themary").setup({ themes = {"gruvbox", "ayu", ...}, -- Your list of installed colorschemes
+  require("themery").setup({ themes = {"gruvbox", "ayu", ...}, -- Your list of installed colorschemes
   themeConfigFile = "~/.config/nvim/lua/settings/theme.lua", -- Described below
   livePreview = true, -- Apply theme while browsing. Default to true. })
 
@@ -53,7 +53,7 @@ Thats is all! When you open Themery you will see the above list.
 
 Let's see how we can customise the list a bit...
 
-  -- Set custom name to the list require("themary").setup({ themes = {{ name =
+  -- Set custom name to the list require("themery").setup({ themes = {{ name =
   "Day", colorscheme = "kanagawa-lotus", }, { name = "Night", colorscheme =
   "kanagawa-dragon", }}, [...] })
 
@@ -69,7 +69,7 @@ before applying the theme.
 
 For example, gruvbox uses a variable to switch between light and dark mode.
 
-  -- Using before and after. require("themary").setup({ themes = {{ name =
+  -- Using before and after. require("themery").setup({ themes = {{ name =
   "Gruvbox dark", colorscheme = "gruvbox", before = [[ -- All this block will be
   executed before apply "set colorscheme" vim.opt.background = "dark" ]], }, {
   name = "Gruvbox light", colorscheme = "gruvbox", before = [[
