@@ -6,8 +6,14 @@ local function centerHorizontal(str)
   return string.rep(' ', shift) .. str
 end
 
-local function trimStartSpaces(s)
-  return string.gsub(s, "[^%S\n]+", "")
+local function trimStartSpaces(text)
+    lines = {}
+    for s in text:gmatch("([^\n]*)\n?") do
+        line, _ = string.gsub(s, "^%s*(.-)%s*$", "%1")
+        table.insert(lines, line)
+    end
+
+    return table.concat(lines, "\n")
 end
 
 local function dump(o)
