@@ -8,6 +8,8 @@ local function setMappings()
   local mappings = {
     k = 'updateView(-1)',
     j = 'updateView(1)',
+    ['<Up>'] = 'updateView(-1)',
+    ['<Down>'] = 'updateView(1)',
     q = 'closeAndRevert()',
     ['<Esc>'] = 'closeAndRevert()',
     ['<cr>'] = 'closeAndSave()',
