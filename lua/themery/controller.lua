@@ -1,6 +1,5 @@
 local constants = require("themery.constants")
 local config = require("themery.config")
-local utils = require("themery.utils")
 local persistence = require("themery.persistence")
 local window = require("themery.window")
 local api = vim.api
