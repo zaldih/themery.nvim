@@ -12,7 +12,7 @@ Themery is a plugin for Neovim written in Lua which allows you to quickly switch
 
 ## Motivation
 
-In most text editors there is usually an option to change the subject quickly. This is very useful for adapting if you work in daylight or at night, if you have to make a presentation on a projector or simply because you like to change often.
+In most text editors there is usually an option to change the colorscheme quickly. This is very useful for adapting if you work in daylight or at night, if you have to make a presentation on a projector or simply because you like to change often.
 
 In vim there is no "efficient" way to change them;
 
