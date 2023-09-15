@@ -58,37 +58,44 @@ local function setColorscheme(theme)
 end
 
 local function updateView(direction)
-  local themeList = config.getSettings().themes;
-  position = position + direction
-  vim.api.nvim_buf_set_option(window.getBuf(), 'modifiable', true)
-  if position < resultsStart then position = resultsStart end
-  if position > #themeList + 1 then position = #themeList + 1 end
+	local themeList = config.getSettings().themes
+	position = position + direction
+	vim.api.nvim_buf_set_option(window.getBuf(), "modifiable", true)
 
-  if #themeList == 0 then
-    window.printNoThemesLoaded()
-    vim.api.nvim_buf_set_option(window.getBuf(), 'modifiable', false)
-    return
-  end
+	-- cycle to the last result if cursor is at the top of the results list and moved up
+	if position < resultsStart then
+		position = #themeList + resultsStart - 1
+	end
+	-- cycle to the first result if cursor is at the bottom of the results list and moved down
+	if position > #themeList + 1 then
+		position = resultsStart
+	end
 
-  local resultToPrint = {}
-  for i in ipairs(themeList) do
-    local prefix = '  '
+	if #themeList == 0 then
+		window.printNoThemesLoaded()
+		vim.api.nvim_buf_set_option(window.getBuf(), "modifiable", false)
+		return
+	end
 
-    if currentThemeIndex == i then
-      prefix = '> '
-    end
+	local resultToPrint = {}
+	for i in ipairs(themeList) do
+		local prefix = "  "
 
-    resultToPrint[i] = prefix..themeList[i].name
-  end
+		if currentThemeId == i then
+			prefix = "> "
+		end
 
-  api.nvim_buf_set_lines(window.getBuf(), 1, -1, false, resultToPrint)
-  api.nvim_win_set_cursor(window.getWin(), {position, 0})
+		resultToPrint[i] = prefix .. themeList[i].name
+	end
 
-  if config.getSettings().livePreview then
-    setColorscheme(themeList[position-1])
-  end
+	api.nvim_buf_set_lines(window.getBuf(), 1, -1, false, resultToPrint)
+	api.nvim_win_set_cursor(window.getWin(), { position, 0 })
 
-  vim.api.nvim_buf_set_option(window.getBuf(), 'modifiable', false)
+	if config.getSettings().livePreview then
+		setColorscheme(themeList[position - 1])
+	end
+
+	vim.api.nvim_buf_set_option(window.getBuf(), "modifiable", false)
 end
 
 local function revertTheme()
