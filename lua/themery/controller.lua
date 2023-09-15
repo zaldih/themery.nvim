@@ -5,56 +5,60 @@ local window = require("themery.window")
 local api = vim.api
 
 local position = 0
-local currentThemeIndex = -1
-local currentThemeName = ""
 local resultsStart = constants.RESULTS_TOP_MARGIN
+local currentThemeId = vim.g.theme_id
 
 local function loadActualThemeConfig()
-  local themeList = config.getSettings().themes;
-  currentThemeName = vim.g.colors_name
+	local themeList = config.getSettings().themes
 
-  for k in pairs(themeList) do
-    if currentThemeName == themeList[k].colorscheme then
-      currentThemeIndex = k
-      position = k + resultsStart - 1
-      return
-    end
-  end
+	-- if currentThemeId isn't set, it's because it's the first time it has been run
+	if not currentThemeId then
+		position = resultsStart
+		return
+	end
+
+	for k in pairs(themeList) do
+		if currentThemeId == k then
+			position = k + resultsStart - 1
+			return
+		end
+	end
 end
 
 local function setColorscheme(theme)
-  if theme.before then
-    local fn, err = load(theme.before)
-    if err then
-      print("Themery error: "..err)
-      return false
-    end
-    if fn then fn() end
-  end
+	if theme.before then
+		local fn, err = load(theme.before)
+		if err then
+			print("Themery error: " .. err)
+			return false
+		end
+		if fn then
+			fn()
+		end
+	end
 
-  local ok, _ = pcall(
-    vim.cmd,
-    "colorscheme "..theme.colorscheme
-  )
+	local ok, _ = pcall(vim.cmd, "colorscheme " .. theme.colorscheme)
 
-  -- check if the colorscheme was loaded successfully
-  if not ok then
-    print(constants.MSG_ERROR.THEME_NOT_LOADED..": "..theme)
-    -- Restore previus
-    vim.cmd('colorscheme '..currentThemeName)
-    return false
-  end
+	-- check if the colorscheme was loaded successfully
+	if not ok then
+		print(constants.MSG_ERROR.THEME_NOT_LOADED .. ": " .. theme)
+		-- Restore previus
+		vim.cmd("colorscheme " .. config.getSettings().themes[currentThemeId])
+		return false
+	end
 
-  if theme.after then
-    local fn, err = load(theme.after)
-    if err then
-      print(constants.MSG_ERROR.GENERIC..": "..err)
-      return false
-    end
-    if fn then fn() end
-  end
+	if theme.after then
+		local fn, err = load(theme.after)
+		if err then
+			print(constants.MSG_ERROR.GENERIC .. ": " .. err)
+			return false
+		end
+		if fn then
+			fn()
+		end
+	end
 
-  return true
+	return true
 end
 
 local function updateView(direction)
@@ -66,6 +70,7 @@ local function updateView(direction)
 	if position < resultsStart then
 		position = #themeList + resultsStart - 1
 	end
+  
 	-- cycle to the first result if cursor is at the bottom of the results list and moved down
 	if position > #themeList + 1 then
 		position = resultsStart
@@ -99,36 +104,38 @@ local function updateView(direction)
 end
 
 local function revertTheme()
-  setColorscheme(config.getSettings().themes[currentThemeIndex])
+	-- setColorscheme(config.getSettings().themes[currentThemeIndex])
+	setColorscheme(config.getSettings().themes[currentThemeId])
 end
 
 local function open()
-  window.openWindow()
-  loadActualThemeConfig()
-  updateView(0)
+	window.openWindow()
+	loadActualThemeConfig()
+	updateView(0)
 end
 
 local function close()
-  window.closeWindow()
+	window.closeWindow()
 end
 
 local function closeAndRevert()
-  revertTheme()
-  window.closeWindow()
+	revertTheme()
+	window.closeWindow()
 end
 
 local function closeAndSave()
-  local theme = config.getSettings().themes[position-1]
-  persistence.saveTheme(theme)
-  window.closeWindow()
+	local theme = config.getSettings().themes[position - 1]
+	persistence.saveTheme(theme, position - 1)
+	currentThemeId = position - 1
+	window.closeWindow()
 end
 
 return {
-  open = open,
-  close = close,
-  closeAndRevert = closeAndRevert,
-  closeAndSave = closeAndSave,
-  updateView = updateView,
-  loadActualThemeConfig = loadActualThemeConfig,
-  setColorscheme = setColorscheme,
+	open = open,
+	close = close,
+	closeAndRevert = closeAndRevert,
+	closeAndSave = closeAndSave,
+	updateView = updateView,
+	loadActualThemeConfig = loadActualThemeConfig,
+	setColorscheme = setColorscheme,
 }
