@@ -65,11 +65,15 @@ local function updateView(direction)
 	local themeList = config.getSettings().themes
 	position = position + direction
 	vim.api.nvim_buf_set_option(window.getBuf(), "modifiable", true)
+
+	-- cycle to the last result if cursor is at the top of the results list and moved up
 	if position < resultsStart then
-		position = resultsStart
+		position = #themeList + resultsStart - 1
 	end
+  
+	-- cycle to the first result if cursor is at the bottom of the results list and moved down
 	if position > #themeList + 1 then
-		position = #themeList + 1
+		position = resultsStart
 	end
 
 	if #themeList == 0 then
