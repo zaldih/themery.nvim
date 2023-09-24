@@ -5,11 +5,12 @@ local window = require("themery.window")
 local api = vim.api
 
 local position = 0
+local currentThemeId = 0
 local resultsStart = constants.RESULTS_TOP_MARGIN
-local currentThemeId = vim.g.theme_id
 
 local function loadActualThemeConfig()
 	local themeList = config.getSettings().themes
+  currentThemeId = vim.g.theme_id
 
 	-- if currentThemeId isn't set, it's because it's the first time it has been run
 	if not currentThemeId then
