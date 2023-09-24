@@ -5,21 +5,21 @@ local window = require("themery.window")
 local api = vim.api
 
 local position = 0
-local currentThemeId = 0
+local selectedThemeId = 0
 local resultsStart = constants.RESULTS_TOP_MARGIN
 
 local function loadActualThemeConfig()
 	local themeList = config.getSettings().themes
-  currentThemeId = vim.g.theme_id
+  selectedThemeId = vim.g.theme_id
 
 	-- if currentThemeId isn't set, it's because it's the first time it has been run
-	if not currentThemeId then
+	if not selectedThemeId then
 		position = resultsStart
 		return
 	end
 
 	for k in pairs(themeList) do
-		if currentThemeId == k then
+		if selectedThemeId == k then
 			position = k + resultsStart - 1
 			return
 		end
@@ -44,7 +44,7 @@ local function setColorscheme(theme)
 	if not ok then
 		print(constants.MSG_ERROR.THEME_NOT_LOADED .. ": " .. theme)
 		-- Restore previus
-		vim.cmd("colorscheme " .. config.getSettings().themes[currentThemeId])
+		vim.cmd("colorscheme " .. config.getSettings().themes[selectedThemeId])
 		return false
 	end
 
@@ -87,7 +87,7 @@ local function updateView(direction)
 	for i in ipairs(themeList) do
 		local prefix = "  "
 
-		if currentThemeId == i then
+		if selectedThemeId == i then
 			prefix = "> "
 		end
 
@@ -106,7 +106,7 @@ end
 
 local function revertTheme()
 	-- setColorscheme(config.getSettings().themes[currentThemeIndex])
-	setColorscheme(config.getSettings().themes[currentThemeId])
+	setColorscheme(config.getSettings().themes[selectedThemeId])
 end
 
 local function open()
@@ -127,7 +127,7 @@ end
 local function closeAndSave()
 	local theme = config.getSettings().themes[position - 1]
 	persistence.saveTheme(theme, position - 1)
-	currentThemeId = position - 1
+	selectedThemeId = position - 1
 	window.closeWindow()
 end
 
