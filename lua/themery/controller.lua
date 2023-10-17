@@ -128,6 +128,9 @@ local function closeAndSave()
 	local theme = config.getSettings().themes[position - 1]
 	persistence.saveTheme(theme, position - 1)
 	selectedThemeId = position - 1
+  -- sarmun's fix begin
+  vim.g.theme_id = selectedThemeId
+  -- sarmun's fix end
 	window.closeWindow()
 end
 
