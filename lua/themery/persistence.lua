@@ -2,6 +2,9 @@ local constants = require("themery.constants")
 local config = require("themery.config")
 local utils = require("themery.utils")
 
+local START_MARKET = "-- Themery block"
+local END_MARKET = "-- end themery block"
+
 local function saveTheme(theme, theme_id)
 	local configFilePath = config.getSettings().themeConfigFile
 	local file = io.open(configFilePath, "r")
@@ -13,10 +16,7 @@ local function saveTheme(theme, theme_id)
 
 	local content = file:read("*all")
 
-	local start_marker = "-- Themery block"
-	local end_marker = "-- end themery block"
-
-	local start_pos, end_pos = content:find(start_marker .. "\n(.+)\n" .. end_marker)
+	local start_pos, end_pos = content:find(START_MARKET .. "\n(.+)\n" .. END_MARKET)
 
 	if not start_pos or not end_pos then
 		print(constants.MSG_ERROR.NO_MARKETS)
@@ -42,11 +42,11 @@ local function saveTheme(theme, theme_id)
 	configToWrite = configToWrite .. "vim.g.theme_id = " .. theme_id
 
 	local replaced_content = content:sub(1, start_pos - 1)
-		.. start_marker
+		.. START_MARKET
 		.. "\n"
 		.. configToWrite
 		.. "\n"
-		.. end_marker
+		.. END_MARKET
 		.. content:sub(end_pos + 1)
 
 	local outfile = io.open(configFilePath, "w")
@@ -61,6 +61,27 @@ local function saveTheme(theme, theme_id)
 	print(constants.MSG_INFO.THEME_SAVED)
 end
 
+local function isFileValid()
+	local configFilePath = config.getSettings().themeConfigFile
+	local file = io.open(configFilePath, "r")
+
+	if not file then
+		error("Persistence file no exist: " .. configFilePath)
+	end
+
+	local fileContent = file:read("*a")
+	file:close()
+
+	local start_pos, end_pos = fileContent:find(START_MARKET .. "\n(.+)\n" .. END_MARKET)
+
+	if not start_pos or not end_pos then
+		error("No valid marks in persistence file (no themery start and end block found)")
+	end
+
+	return true
+end
+
 return {
 	saveTheme = saveTheme,
+	isFileValid = isFileValid,
 }
