@@ -10,7 +10,7 @@ local resultsStart = constants.RESULTS_TOP_MARGIN
 
 local function loadActualThemeConfig()
 	local themeList = config.getSettings().themes
-  selectedThemeId = vim.g.theme_id
+	selectedThemeId = vim.g.theme_id
 
 	-- if currentThemeId isn't set, it's because it's the first time it has been run
 	if not selectedThemeId then
@@ -42,7 +42,7 @@ local function setColorscheme(theme)
 
 	-- check if the colorscheme was loaded successfully
 	if not ok then
-		print(constants.MSG_ERROR.THEME_NOT_LOADED .. ": " .. theme)
+		print(constants.MSG_ERROR.THEME_NOT_LOADED .. ": " .. theme.colorscheme)
 		-- Restore previus
 		vim.cmd("colorscheme " .. config.getSettings().themes[selectedThemeId])
 		return false
@@ -71,7 +71,7 @@ local function updateView(direction)
 	if position < resultsStart then
 		position = #themeList + resultsStart - 1
 	end
-  
+
 	-- cycle to the first result if cursor is at the bottom of the results list and moved down
 	if position > #themeList + 1 then
 		position = resultsStart
@@ -128,9 +128,9 @@ local function closeAndSave()
 	local theme = config.getSettings().themes[position - 1]
 	persistence.saveTheme(theme, position - 1)
 	selectedThemeId = position - 1
-  -- sarmun's fix begin
-  vim.g.theme_id = selectedThemeId
-  -- sarmun's fix end
+	-- sarmun's fix begin
+	vim.g.theme_id = selectedThemeId
+	-- sarmun's fix end
 	window.closeWindow()
 end
 
