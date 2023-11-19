@@ -105,8 +105,15 @@ local function updateView(direction)
 end
 
 local function revertTheme()
-	-- setColorscheme(config.getSettings().themes[currentThemeIndex])
-	setColorscheme(config.getSettings().themes[selectedThemeId])
+	local colorschemeToSet
+
+	-- If there is no previous theme to revert to, use the default.
+	if selectedThemeId then
+		colorschemeToSet = config.getSettings().themes[selectedThemeId]
+	else
+		colorschemeToSet = { colorscheme = "default" }
+	end
+	setColorscheme(colorschemeToSet)
 end
 
 local function open()
