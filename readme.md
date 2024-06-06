@@ -165,6 +165,11 @@ To do this you have to put this code snippet wherever you see fit (i recommend i
 Remember the themeConfigFile option? You will have to put the path to the file where you have written the above.
 This way Themery will write the configuration there.
 
+> [!IMPORTANT]  
+> Don't forget to import your theme file into your `init.lua` so neovim can load it.
+>
+> Example: `require('theme.lua')`;
+
 #### Using .vim config?
 
 Persistence also works fine if you don't have the configuration in a Lua file. You can do this instead and it will still work.
