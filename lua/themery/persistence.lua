@@ -2,9 +2,13 @@ local constants = require("themery.constants")
 local config = require("themery.config")
 local utils = require("themery.utils")
 
+-- Constants for identifying the start and end of the Themery configuration block in the user's config file.
 local START_MARKET = "-- Themery block"
 local END_MARKET = "-- end themery block"
 
+-- Saves the selected theme configuration to the user's config file.
+-- @param theme table containing the theme data
+-- @param theme_id number representing the theme's ID
 local function saveTheme(theme, theme_id)
 	local configFilePath = config.getSettings().themeConfigFile
 	local file = io.open(configFilePath, "r")
@@ -15,6 +19,7 @@ local function saveTheme(theme, theme_id)
 	end
 
 	local content = file:read("*all")
+	file:close()
 
 	local start_pos, end_pos = content:find(START_MARKET .. "\n(.+)\n" .. END_MARKET)
 
@@ -23,31 +28,18 @@ local function saveTheme(theme, theme_id)
 		return
 	end
 
-	local beforeCode = ""
-	local afterCode = ""
+	local beforeCode = theme.before and utils.trimStartSpaces(theme.before) .. "\n" or ""
+	local afterCode = theme.after and "\n" .. utils.trimStartSpaces(theme.after) or ""
 
-	if theme.before then
-		beforeCode = utils.trimStartSpaces(theme.before) .. "\n"
-	end
-
-	if theme.after then
-		afterCode = "\n" .. utils.trimStartSpaces(theme.after)
-	end
-
-	local configToWrite = "-- This block will be replaced by Themery.\n"
+	local configToWrite = START_MARKET
+	configToWrite = configToWrite .. "\n-- This block will be replaced by Themery.\n"
 	configToWrite = configToWrite .. beforeCode
-	configToWrite = configToWrite .. 'vim.cmd("colorscheme '
-	configToWrite = configToWrite .. theme.colorscheme .. '")\n'
+	configToWrite = configToWrite .. 'vim.cmd("colorscheme ' .. theme.colorscheme .. '")\n'
 	configToWrite = configToWrite .. afterCode
 	configToWrite = configToWrite .. "vim.g.theme_id = " .. theme_id
+	configToWrite = configToWrite .. "\n" .. END_MARKET
 
-	local replaced_content = content:sub(1, start_pos - 1)
-		.. START_MARKET
-		.. "\n"
-		.. configToWrite
-		.. "\n"
-		.. END_MARKET
-		.. content:sub(end_pos + 1)
+	local replaced_content = content:sub(1, start_pos - 1) .. configToWrite .. content:sub(end_pos + 1)
 
 	local outfile = io.open(configFilePath, "w")
 
@@ -61,6 +53,8 @@ local function saveTheme(theme, theme_id)
 	print(constants.MSG_INFO.THEME_SAVED)
 end
 
+-- Checks if the user's config file is valid for Themery's persistence feature.
+-- @return boolean indicating if the file is valid
 local function isFileValid()
 	local configFilePath = config.getSettings().themeConfigFile
 	local file = io.open(configFilePath, "r")

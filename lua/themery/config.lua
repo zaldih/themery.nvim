@@ -1,13 +1,16 @@
 local constants = require("themery.constants")
-local settings = {}
+-- Configuration settings for Themery plugin
+local configSettings = {}
 
+-- Validates the configuration settings for correctness and completeness
+-- @return boolean indicating if the configuration is valid
 local function isConfigValid()
-	if next(settings) == nil then
+	if next(configSettings) == nil then
 		print(constants.MSG_INFO.NO_SETUP)
-		return
+		return false
 	end
 
-	local themeList = settings.themes
+	local themeList = configSettings.themes
 	local errors = {}
 
 	for i, theme in pairs(themeList) do
@@ -27,20 +30,21 @@ local function isConfigValid()
 	end
 
 	if #errors > 0 then
-		print("Themery config have some errors in their config:")
+		print("Themery config has some errors in their config:")
 		for _, error in ipairs(errors) do
 			print("  - " .. error)
 		end
-		print('\nCheck "help" and fix then.')
+		print('\nCheck "help" and fix them.')
 		return false
 	end
 	return true
 end
 
+-- Normalizes the theme list to ensure consistency in structure
 local function normalizeThemeList()
-	for i, v in ipairs(settings.themes) do
+	for i, v in ipairs(configSettings.themes) do
 		if type(v) == "string" then
-			settings.themes[i] = {
+			configSettings.themes[i] = {
 				name = v,
 				colorscheme = v,
 			}
@@ -48,21 +52,27 @@ local function normalizeThemeList()
 	end
 end
 
+-- Normalizes file paths to absolute paths
 local function normalizePaths()
-	local path = settings.themeConfigFile
+	local path = configSettings.themeConfigFile
 	local normalizedPath = vim.fn.fnamemodify(path, ":p") -- Get Full path
-	settings.themeConfigFile = normalizedPath
+	configSettings.themeConfigFile = normalizedPath
 end
 
+-- Sets up the Themery configuration with user-defined settings
+-- @param userConfig table containing user-defined settings
+-- @return table containing the merged settings
 local function setup(userConfig)
-	settings = vim.tbl_deep_extend("keep", userConfig or {}, constants.DEFAULT_SETTINGS)
+	configSettings = vim.tbl_deep_extend("keep", userConfig or {}, constants.DEFAULT_SETTINGS)
 	normalizeThemeList()
 	normalizePaths()
-	return settings
+	return configSettings
 end
 
+-- Retrieves the current configuration settings
+-- @return table containing the current settings
 local getSettings = function()
-	return settings
+	return configSettings
 end
 
 return {

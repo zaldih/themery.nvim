@@ -3,6 +3,7 @@ local utils = require("themery.utils")
 local api = vim.api
 local buf, win
 
+-- Calculates the window transformation for centering the Themery window
 local function getWinTransform()
   local totalWidth = api.nvim_get_option("columns")
   local totalHeight = api.nvim_get_option("lines")
@@ -17,6 +18,7 @@ local function getWinTransform()
   }
 end
 
+-- Opens the Themery window with minimal style and centered positioning
 local function openWindow()
   buf = api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_option(buf, 'filetype', 'themery')
@@ -41,19 +43,23 @@ local function openWindow()
   api.nvim_buf_set_lines(buf, 0, -1, false, { title })
 end
 
+-- Closes the Themery window
 local function closeWindow()
   api.nvim_win_close(win, true)
 end
 
+-- Prints a message when no themes are loaded
 local function printNoThemesLoaded()
   local text = constants.MSG_INFO.NO_THEMES_CONFIGURED
   api.nvim_buf_set_lines(buf, 1, -1, false, { text })
 end
 
+-- Retrieves the buffer ID of the Themery window
 local getBuf = function()
   return buf
 end
 
+-- Retrieves the window ID of the Themery window
 local getWin = function()
   return win
 end
