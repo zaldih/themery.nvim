@@ -2,13 +2,25 @@
 <img src="docs/title-logo.svg" width="420">
 </p>
 
-#
-
-Themery is a plugin for Neovim written in Lua which allows you to quickly switch between your installed themes through a menu. Very convenient.
+Themery is a plugin for Neovim written in Lua which allows you to quickly switch between your installed themes through a menu and making them persistent like VSCode. Very convenient.
 
 <p align="center">
 <img src="docs/header.png">
 </p>
+
+- [Motivation](#motivation)
+- [Features](#features)
+- [Installation](#installation)
+  - [vim-plug](#vim-plug)
+  - [Packer](#packer)
+- [Configuration](#configuration)
+  - [Setup](#setup)
+    - [Minimal config](#minimal-config)
+    - [Customizing names](#customizing-names)
+    - [Executing code on theme apply](#executing-code-on-theme-apply)
+  - [Persistence](#persistence)
+- [Usage](#usage)
+- [License](#license)
 
 ## Motivation
 
