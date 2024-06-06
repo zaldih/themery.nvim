@@ -1,3 +1,6 @@
 {
-  "diagnostics.globals": ["vim"]
+  "diagnostics.globals": ["vim"],
+  "linter": "luacheck",
+  "test_framework": "busted",
+  "test_runner": "busted"
 }
