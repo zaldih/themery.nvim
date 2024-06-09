@@ -117,8 +117,8 @@ local function revertTheme()
 end
 
 local function open()
-	window.openWindow()
 	loadActualThemeConfig()
+	window.openWindow()
 	updateView(0)
 end
 
@@ -135,10 +135,13 @@ local function closeAndSave()
 	local theme = config.getSettings().themes[position - 1]
 	persistence.saveTheme(theme, position - 1)
 	selectedThemeId = position - 1
-	-- sarmun's fix begin
 	vim.g.theme_id = selectedThemeId
-	-- sarmun's fix end
 	window.closeWindow()
+end
+
+local function bootstrap()
+	loadActualThemeConfig()
+	persistence.loadState()
 end
 
 return {
@@ -149,4 +152,5 @@ return {
 	updateView = updateView,
 	loadActualThemeConfig = loadActualThemeConfig,
 	setColorscheme = setColorscheme,
+	bootstrap = bootstrap,
 }
