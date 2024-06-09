@@ -4,6 +4,8 @@ local config = require("themery.config")
 local constants = require("themery.constants")
 local api = vim.api
 
+controller.bootstrap()
+
 local function setMappings()
 	local mappings = {
 		k = "updateView(-1)",

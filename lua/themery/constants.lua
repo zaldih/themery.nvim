@@ -12,6 +12,7 @@ local MSG_INFO = {
   NO_SETUP = "Themery is not configured. See installation guide.",
   NO_THEMES_CONFIGURED = "No themes configured. See :help Themery",
   THEME_SAVED = "Theme saved",
+  THEME_CONFIG_FILE_DEPRECATED = "Themery: The ‘themeConfigFile’ property is deprecated. Delete it from config and use normally. More info in the project page.",
 }
 
 local MSG_ERROR = {
