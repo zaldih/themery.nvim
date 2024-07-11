@@ -8,8 +8,8 @@ Themery is a plugin for Neovim written in Lua which allows you to quickly switch
 <img src="docs/header.png">
 </p>
 
-- [Motivation](#motivation)
 - [Features](#features)
+- [Motivation](#motivation)
 - [Installation](#installation)
   - [vim-plug](#vim-plug)
   - [Packer](#packer)
@@ -18,9 +18,17 @@ Themery is a plugin for Neovim written in Lua which allows you to quickly switch
     - [Minimal config](#minimal-config)
     - [Customizing names](#customizing-names)
     - [Executing code on theme apply](#executing-code-on-theme-apply)
-  - [Persistence](#persistence)
 - [Usage](#usage)
 - [License](#license)
+
+## Features
+
+- 🎨 **Theme Switching**: Quickly switch between your colorscheme.
+- 💾 **Persistent**: Make your selected theme persistent across sessions, just like in VSCode.
+- 🔍 **Live Preview**: See a live preview of the theme as you navigate through the list.
+- 🛠️ **Custom Hooks**: Define code to be executed before and after applying a theme (define variables, for example).
+- 🚀 **Optimized Performance**: Lightweight and optimized for fast performance.
+- 🆓 **No Dependencies**: Because things are more fun when they don't depend on other stuff.
 
 ## Motivation
 
@@ -33,26 +41,11 @@ In vim there is no "efficient" way to change them;
 
 Themery adds to your neovim a menu from which you can switch between all of them simply and quickly.
 
-## WIP
+## Usage
 
-**Project under development.**
-Many things can change at any time and the plugin may not be stable.
+Open with `:Themery` and navigate and move between the results with `j` and `k`.
 
-**Let me know if you have any suggestions, comments or bugs!**
-
-## Features
-
-- Sort and name as you wish.
-- Apply themes in real time.
-- Persistently saves the theme (or not).
-- Executes instructions before and/or after applying a theme.
-
-### To-do
-
-- Add categories (Light/Dark).
-- Expose the API to be able to switch between themes without opening the menu.
-
-In the future I would like the plugin to become a complete theme manager so that themes can be tested on the fly before installing them or browsing through a community repertoire.
+Press `<cr>` for apply theme and save. `q` or `<Esc>` for exit without applying.
 
 ## Installation
 
@@ -72,12 +65,7 @@ use 'zaldih/themery.nvim'
 
 ## Configuration
 
-Configuration is simple and intuitive. It consists of 2 steps which are described below:
-
-1. Setup
-2. Persistence
-
-### Setup
+Configuration is simple and intuitive.
 
 #### Minimal config
 
@@ -86,13 +74,12 @@ Let's get down to the nitty-gritty first. Anywhere in your configuration put thi
 ```lua
 -- Minimal config
 require("themery").setup({
-  themes = {"gruvbox", "ayu", ...}, -- Your list of installed colorschemes
-  themeConfigFile = "~/.config/nvim/lua/settings/theme.lua", -- Described below
-  livePreview = true, -- Apply theme while browsing. Default to true.
+  themes = {"gruvbox", "ayu", ...}, -- Your list of installed colorschemes.
+  livePreview = true, -- Apply theme while picking. Default to true.
 })
 ```
 
-Thats is all! When you open Themery you will see the above list.
+Thats is all! When you open Themery you will see the above **themes** list.
 
 #### Customizing names
 
@@ -109,7 +96,6 @@ require("themery").setup({
     name = "Night",
     colorscheme = "kanagawa-dragon",
   }},
-  [...]
 })
 ```
 
@@ -121,7 +107,7 @@ Sometimes it is necessary to add additional instructions to make your favourite 
 
 Themery includes a before and after option that will be executed respectively before applying the theme.
 
-For example, gruvbox uses a variable to switch between light and dark mode.
+For example, **gruvbox** uses a variable to switch between **light** and **dark** mode.
 
 ```lua
 -- Using before and after.
@@ -148,44 +134,22 @@ require("themery").setup({
 
 That is, everything inside those variables will be executed as Lua code.
 
-_Due to technical limitations, for now "functions" can only be declared as text instead of functions._
-
-### Persistence
-
-Changes made to the plugin are written directly to your configuration file. This way themes can be loaded even without the plugin being loaded.
-
-To do this you have to put this code snippet wherever you see fit (i recommend in a dedicated file). I will use `~/.config/nvim/lua/theme.lua`
-
-```lua
--- Themery block
-  -- This block will be replaced by Themery.
--- end themery block
-```
-
-Remember the themeConfigFile option? You will have to put the path to the file where you have written the above.
-This way Themery will write the configuration there.
-
 > [!IMPORTANT]  
-> Don't forget to import your theme file into your `init.lua` so neovim can load it.
->
-> Example: `require('theme.lua')`;
+> Note that all code in after and before must be declared as a string. That is, wrapped between '[[' and ']]' and not as a function.
 
-#### Using .vim config?
+## WIP
 
-Persistence also works fine if you don't have the configuration in a Lua file. You can do this instead and it will still work.
+**Project under development.**
+Many things can change at any time and the plugin may not be stable.
 
-```vim
-lua << EOF
--- Themery block
--- end themery block
-EOF
-```
+**Let me know if you have any suggestions, comments or bugs!**
 
-## Usage
+### To-do
 
-Open with `:Themery` and navigate and move between the results with `j` and `k`.
+- Add categories (Light/Dark).
+- Expose the API to be able to switch between themes without opening the menu.
 
-Press `<cr>` for apply theme and save. `q` or `<Esc>` for exit.
+In the future I would like the plugin to become a complete theme manager so that themes can be tested on the fly before installing them or browsing through a community repertoire.
 
 ## License
 
