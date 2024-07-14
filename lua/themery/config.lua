@@ -60,10 +60,10 @@ local function normalizePaths()
 end
 
 local function checkDeprecatedConfig()
-   	local configFilePath = configSettings.themeConfigFile
-    if configFilePath then
-        print(constants.MSG_INFO.THEME_CONFIG_FILE_DEPRECATED)
-    end
+	local configFilePath = configSettings.themeConfigFile
+	if configFilePath and not configFilePath:match("v:null") then
+		print(constants.MSG_INFO.THEME_CONFIG_FILE_DEPRECATED)
+	end
 end
 
 -- Sets up the Themery configuration with user-defined settings
@@ -73,7 +73,7 @@ local function setup(userConfig)
 	configSettings = vim.tbl_deep_extend("keep", userConfig or {}, constants.DEFAULT_SETTINGS)
 	normalizeThemeList()
 	normalizePaths()
-	checkDeprecatedConfig();
+	checkDeprecatedConfig()
 	return configSettings
 end
 
@@ -82,7 +82,6 @@ end
 local getSettings = function()
 	return configSettings
 end
-
 
 return {
 	setup = setup,
