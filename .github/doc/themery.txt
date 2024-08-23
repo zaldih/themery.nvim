@@ -1,0 +1,191 @@
+*themery.txt*             For NVIM v0.8.0            Last change: 2024 July 14
+
+==============================================================================
+Table of Contents                                  *themery-table-of-contents*
+
+  - Features                                                |themery-features|
+  - Motivation                                            |themery-motivation|
+  - Usage                                                      |themery-usage|
+  - Installation                                        |themery-installation|
+  - Configuration                                      |themery-configuration|
+  - WIP                                                          |themery-wip|
+  - License                                                  |themery-license|
+Themery is a plugin for Neovim written in Lua which allows you to quickly
+switch between your installed themes through a menu and making them persistent
+like VSCode. Very convenient.
+
+- |themery-features|
+- |themery-motivation|
+- |themery-installation|
+    - |themery-vim-plug|
+    - |themery-packer|
+- |themery-configuration|
+    - |themery-setup|
+        - |themery-minimal-config|
+        - |themery-customizing-names|
+        - |themery-executing-code-on-theme-apply|
+- |themery-usage|
+- |themery-license|
+
+
+FEATURES                                                    *themery-features*
+
+- 🎨 **Theme Switching**: Quickly switch between your colorscheme.
+- 💾 **Persistent**: Make your selected theme persistent across sessions, just like in VSCode.
+- 🔍 **Live Preview**: See a live preview of the theme as you navigate through the list.
+- 🛠️ **Custom Hooks**: Define code to be executed before and after applying a theme (define variables, for example).
+- 🚀 **Optimized Performance**: Lightweight and optimized for fast performance.
+- 🆓 **No Dependencies**: Because things are more fun when they don’t depend on other stuff.
+
+
+MOTIVATION                                                *themery-motivation*
+
+In most text editors there is usually an option to change the colorscheme
+quickly. This is very useful for adapting if you work in daylight or at night,
+if you have to make a presentation on a projector or simply because you like to
+change often.
+
+In vim there is no "efficient" way to change them;
+
+1. You can change it in the configuration file but that involves opening and editing it.
+2. You can use `:colorscheme <theme>` but it is temporary and sometimes you need to run some more command to apply the theme to other plugins or set some variables.
+
+Themery adds to your neovim a menu from which you can switch between all of
+them simply and quickly.
+
+
+USAGE                                                          *themery-usage*
+
+Open with `:Themery` and navigate and move between the results with `j` and
+`k`.
+
+Press `<cr>` for apply theme and save. `q` or `<Esc>` for exit without
+applying.
+
+
+INSTALLATION                                            *themery-installation*
+
+Choose one of these options and continue with "Configuration".
+
+
+VIM-PLUG ~
+
+>
+    Plug 'zaldih/themery.nvim'
+<
+
+
+PACKER ~
+
+>
+    use 'zaldih/themery.nvim'
+<
+
+
+CONFIGURATION                                          *themery-configuration*
+
+Configuration is simple and intuitive.
+
+
+MINIMAL CONFIG
+
+Let’s get down to the nitty-gritty first. Anywhere in your configuration put
+this:
+
+>lua
+    -- Minimal config
+    require("themery").setup({
+      themes = {"gruvbox", "ayu", ...}, -- Your list of installed colorschemes.
+      livePreview = true, -- Apply theme while picking. Default to true.
+    })
+<
+
+Thats is all! When you open Themery you will see the above **themes** list.
+
+
+CUSTOMIZING NAMES
+
+Let’s see how we can customise the list a bit…
+
+>lua
+    -- Set custom name to the list
+    require("themery").setup({
+      themes = {{
+        name = "Day",
+        colorscheme = "kanagawa-lotus",
+      },
+      {
+        name = "Night",
+        colorscheme = "kanagawa-dragon",
+      }},
+    })
+<
+
+
+EXECUTING CODE ON THEME APPLY
+
+Let’s go one step further.
+
+Sometimes it is necessary to add additional instructions to make your favourite
+theme work.
+
+Themery includes a before and after option that will be executed respectively
+before applying the theme.
+
+For example, **gruvbox** uses a variable to switch between **light** and
+**dark** mode.
+
+>lua
+    -- Using before and after.
+    require("themery").setup({
+      themes = {{
+        name = "Gruvbox dark",
+        colorscheme = "gruvbox",
+        before = [[
+          -- All this block will be executed before apply "set colorscheme"
+          vim.opt.background = "dark"
+        ]],
+      },
+      {
+        name = "Gruvbox light",
+        colorscheme = "gruvbox",
+        before = [[
+          vim.opt.background = "light"
+        ]],
+        after = [[-- Same as before, but after if you need it]]
+      }},
+      [...]
+    })
+<
+
+That is, everything inside those variables will be executed as Lua code.
+
+
+  [!IMPORTANT] Note that all code in after and before must be declared as a
+  string. That is, wrapped between '[[’ and ’]]' and not as a function.
+
+WIP                                                              *themery-wip*
+
+**Project under development.** Many things can change at any time and the
+plugin may not be stable.
+
+**Let me know if you have any suggestions, comments or bugs!**
+
+
+TO-DO ~
+
+- Add categories (Light/Dark).
+- Expose the API to be able to switch between themes without opening the menu.
+
+In the future I would like the plugin to become a complete theme manager so
+that themes can be tested on the fly before installing them or browsing through
+a community repertoire.
+
+
+LICENSE                                                      *themery-license*
+
+GPL
+
+Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
+
+vim:tw=78:ts=8:noet:ft=help:norl:
