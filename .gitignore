@@ -1,2 +1,4 @@
 doc/tags
 docs/*.xcf
+
+.DS_Store
