@@ -1,7 +1,7 @@
+local persistence = require("themery.persistence")
 local controller = require("themery.controller")
 local window = require("themery.window")
 local config = require("themery.config")
-local constants = require("themery.constants")
 local api = vim.api
 
 controller.bootstrap()
@@ -35,9 +35,29 @@ local function themery()
 	setMappings()
 end
 
+local function setup(userConfig)
+  config.setup(userConfig)
+
+  local configSettings = config.getSettings()
+
+  -- Fall back to
+  if persistence.getIfNeedFallback() then
+    for i = 1, #configSettings.themes do
+      local status = pcall(function () vim.cmd.colorscheme(configSettings.themes[i].colorscheme) end)
+
+      if status then
+        persistence.saveTheme(configSettings.themes[i], i)
+        controller.setPosition(i)
+
+        break
+      end
+    end
+  end
+end
+
 return {
 	themery = themery,
-	setup = config.setup,
+	setup = setup,
 	closeAndRevert = controller.closeAndRevert,
 	closeAndSave = controller.closeAndSave,
 	updateView = controller.updateView,
