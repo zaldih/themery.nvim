@@ -39,7 +39,7 @@ local function isConfigValid()
 		table.insert(errors, message)
 	end
 
-  if type(configSettings.globalAfter) ~= "string" then
+	if type(configSettings.globalAfter) ~= "string" then
 		local message = 'Global after should be a text.'
 		table.insert(errors, message)
 	end
@@ -91,26 +91,26 @@ local function setup(userConfig)
 	normalizePaths()
 	checkDeprecatedConfig()
 
-  -- Check if globalAfter and globalAfter is changed.
+	-- Check if globalAfter and globalAfter is changed.
 
-  local status, json_data = pcall(function()
-    return filesystem.readFromFile(state_file_path)
-  end)
+	local status, json_data = pcall(function()
+		return filesystem.readFromFile(state_file_path)
+	end)
 
-  if status then
-    local data = vim.json.decode(json_data)
+	if status then
+		local data = vim.json.decode(json_data)
 
-    if configSettings.globalBefore ~= data.globalBeforeCode or configSettings.globalAfter ~= data.globalAfterCode then
-      -- If globalAfter and globalAfter did changed, update the state file.
+		if configSettings.globalBefore ~= data.globalBeforeCode or configSettings.globalAfter ~= data.globalAfterCode then
+			-- If globalAfter and globalAfter did changed, update the state file.
 
-      data.globalBeforeCode = configSettings.globalBefore
-      data.globalAfterCode = configSettings.globalAfter
+			data.globalBeforeCode = configSettings.globalBefore
+			data.globalAfterCode = configSettings.globalAfter
 
-      filesystem.writeToFile(state_file_path, vim.json.encode(data))
+			filesystem.writeToFile(state_file_path, vim.json.encode(data))
 
-      print(constants.MSG_INFO.GLOBAL_SETTINGS_CHANGED)
-    end
-  end
+			print(constants.MSG_INFO.GLOBAL_SETTINGS_CHANGED)
+		end
+	end
 
 	return configSettings
 end

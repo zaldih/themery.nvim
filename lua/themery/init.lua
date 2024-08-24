@@ -36,21 +36,21 @@ local function themery()
 end
 
 local function setup(userConfig)
-  local configSettings = config.setup(userConfig)
+	local configSettings = config.setup(userConfig)
 
-  -- Fall back to
-  if persistence.getIfNeedFallback() then
-    for i = 1, #configSettings.themes do
-      local status = pcall(function () vim.cmd.colorscheme(configSettings.themes[i].colorscheme) end)
+	-- Fall back to
+	if persistence.getIfNeedFallback() then
+		for i = 1, #configSettings.themes do
+			local status = pcall(function() vim.cmd.colorscheme(configSettings.themes[i].colorscheme) end)
 
-      if status then
-        persistence.saveTheme(configSettings.themes[i], i)
-        controller.setPosition(i)
+			if status then
+				persistence.saveTheme(configSettings.themes[i], i)
+				controller.setPosition(i)
 
-        break
-      end
-    end
-  end
+				break
+			end
+		end
+	end
 end
 
 return {

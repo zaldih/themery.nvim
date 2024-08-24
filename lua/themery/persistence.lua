@@ -51,11 +51,11 @@ end
 -- Load a function and then execute it.
 -- @param code string
 local function execute(code)
-  local fn, err = load(code)
+    local fn, err = load(code)
 
-  if fn then
-    fn()
-  end
+    if fn then
+        fn()
+    end
 end
 
 -- Load the state.
@@ -81,17 +81,17 @@ local function loadState()
     local ok = pcall(function() vim.cmd.colorscheme(data.colorscheme) end)
 
     if ok then
-      execute(data.globalAfterCode)
-      execute(data.afterCode)
+        execute(data.afterCode)
+        execute(data.globalAfterCode)
     else
-      need_fallback = true
+        need_fallback = true
     end
 end
 
 -- Get if it need to fallback to other colorscheme.
 -- @return boolean
 local function getIfNeedFallback()
-  return need_fallback
+    return need_fallback
 end
 
 return {
