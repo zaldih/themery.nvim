@@ -1,4 +1,5 @@
 local constants = require("themery.constants")
+
 -- Configuration settings for Themery plugin
 local configSettings = {}
 
@@ -71,9 +72,11 @@ end
 -- @return table containing the merged settings
 local function setup(userConfig)
 	configSettings = vim.tbl_deep_extend("keep", userConfig or {}, constants.DEFAULT_SETTINGS)
+
 	normalizeThemeList()
 	normalizePaths()
 	checkDeprecatedConfig()
+
 	return configSettings
 end
 

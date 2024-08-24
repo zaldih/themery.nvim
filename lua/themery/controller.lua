@@ -126,6 +126,10 @@ local function close()
 	window.closeWindow()
 end
 
+local function setPosition (value)
+  position = value
+end
+
 local function closeAndRevert()
 	revertTheme()
 	window.closeWindow()
@@ -141,12 +145,13 @@ end
 
 local function bootstrap()
 	loadActualThemeConfig()
-	persistence.loadState()
+	persistence.loadState() 
 end
 
 return {
 	open = open,
 	close = close,
+  setPosition = setPosition,
 	closeAndRevert = closeAndRevert,
 	closeAndSave = closeAndSave,
 	updateView = updateView,

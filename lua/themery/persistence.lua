@@ -4,6 +4,8 @@ local filesystem = require("themery.filesystem")
 local state_folder_path = vim.fn.stdpath("data") .. "/themery"
 local state_file_path = state_folder_path .. "/state.json"
 
+local need_fallback = false
+
 -- Saves the selected theme configuration to the user's config file.
 -- @param theme table containing the theme data
 -- @param theme_id number representing the theme's ID
@@ -59,14 +61,28 @@ local function loadState()
     if fn then
         fn()
     end
-    vim.cmd("colorscheme " .. data.colorscheme)
-    local fn, err = load(data.afterCode)
-    if fn then
-        fn()
+
+    local ok = pcall(function() vim.cmd.colorscheme(data.colorscheme) end)
+
+
+    if ok then
+      local fn, err = load(data.afterCode)
+      if fn then
+          fn()
+      end
+    else
+      need_fallback = true
     end
+end
+
+-- Get if it need to fallback to other colorscheme.
+-- @return boolean
+local function getIfNeedFallback ()
+  return need_fallback
 end
 
 return {
     saveTheme = saveTheme,
     loadState = loadState,
+    getIfNeedFallback = getIfNeedFallback
 }
