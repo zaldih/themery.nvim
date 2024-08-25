@@ -3,6 +3,8 @@ local TITLE = "Themery - Theme Selector"
 local DEFAULT_SETTINGS = {
   themes = {},
   themesConfigFile = "",
+  globalBefore = "",
+  globalAfter = "",
   livePreview = true,
 }
 
@@ -11,9 +13,9 @@ local RESULTS_TOP_MARGIN = 2
 local MSG_INFO = {
   NO_SETUP = "Themery is not configured. See installation guide.",
   NO_THEMES_CONFIGURED = "No themes configured. See :help Themery",
-  THEME_SAVED = "Theme saved",
-  THEME_CONFIG_FILE_DEPRECATED =
-  "Themery: The ‘themeConfigFile’ property is deprecated. Delete it from config and use normally. More info in the project page.",
+  THEME_SAVED = "Theme Saved",
+  THEME_CONFIG_FILE_DEPRECATED = "Themery: The ‘themeConfigFile’ property is deprecated. Delete it from config and use normally. More info in the project page.",
+  GLOBAL_SETTINGS_CHANGED = "Themery: Global settings changes detected. Please restart to apply the changes."
 }
 
 local MSG_ERROR = {

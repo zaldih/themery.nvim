@@ -36,9 +36,7 @@ local function themery()
 end
 
 local function setup(userConfig)
-  config.setup(userConfig)
-
-  local configSettings = config.getSettings()
+  local configSettings = config.setup(userConfig)
 
   -- Fall back to
   if persistence.getIfNeedFallback() then

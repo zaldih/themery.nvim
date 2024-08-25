@@ -1,4 +1,8 @@
+local filesystem = require("themery.filesystem")
 local constants = require("themery.constants")
+
+local state_folder_path = vim.fn.stdpath("data") .. "/themery"
+local state_file_path = state_folder_path .. "/state.json"
 
 -- Configuration settings for Themery plugin
 local configSettings = {}
@@ -14,7 +18,7 @@ local function isConfigValid()
 	local themeList = configSettings.themes
 	local errors = {}
 
-	for i, theme in pairs(themeList) do
+	for _, theme in pairs(themeList) do
 		if theme.before then
 			if type(theme.before) ~= "string" then
 				local message = 'Before in "' .. theme.name .. '" should be a text.'
@@ -28,6 +32,16 @@ local function isConfigValid()
 				table.insert(errors, message)
 			end
 		end
+	end
+
+	if type(configSettings.globalBefore) ~= "string" then
+		local message = 'Global before should be a text.'
+		table.insert(errors, message)
+	end
+
+  if type(configSettings.globalAfter) ~= "string" then
+		local message = 'Global after should be a text.'
+		table.insert(errors, message)
 	end
 
 	if #errors > 0 then
@@ -76,6 +90,27 @@ local function setup(userConfig)
 	normalizeThemeList()
 	normalizePaths()
 	checkDeprecatedConfig()
+
+  -- Check if globalAfter and globalAfter is changed.
+
+  local status, json_data = pcall(function()
+    return filesystem.readFromFile(state_file_path)
+  end)
+
+  if status then
+    local data = vim.json.decode(json_data)
+
+    if configSettings.globalBefore ~= data.globalBeforeCode or configSettings.globalAfter ~= data.globalAfterCode then
+      -- If globalAfter and globalAfter did changed, update the state file.
+
+      data.globalBeforeCode = configSettings.globalBefore
+      data.globalAfterCode = configSettings.globalAfter
+
+      filesystem.writeToFile(state_file_path, vim.json.encode(data))
+
+      print(constants.MSG_INFO.GLOBAL_SETTINGS_CHANGED)
+    end
+  end
 
 	return configSettings
 end
