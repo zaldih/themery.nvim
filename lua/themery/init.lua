@@ -59,4 +59,7 @@ return {
 	closeAndRevert = controller.closeAndRevert,
 	closeAndSave = controller.closeAndSave,
 	updateView = controller.updateView,
+	setThemeByName = controller.setThemeByName,
+	setThemeByIndex = controller.setThemeByIndex,
+	getCurrentTheme = controller.getCurrentTheme,
 }
