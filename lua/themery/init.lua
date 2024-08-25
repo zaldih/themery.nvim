@@ -64,4 +64,5 @@ return {
 	setThemeByName = controller.setThemeByName,
 	setThemeByIndex = controller.setThemeByIndex,
 	getCurrentTheme = controller.getCurrentTheme,
+	getAvailableThemes = controller.getAvailableThemes,
 }

@@ -144,8 +144,9 @@ That is, everything inside those variables will be executed as Lua code.
 Themery exposes several functions that you can use to interact with themes programmatically.
 
 - `getCurrentTheme()`: Return the current theme configured (a table with **index** (int) and **name** (string)), or nil.
-- `setThemeByName(name:string, shouldSave:boolean)`: Set a theme based on the name specified. If shouldSave is true, the selection will be saved. _The name refers to the name chosen by the user in the configuration and not to the name of the colorscheme_.
-- `setThemeByIndex(index:Int, shouldSave:boolean)`: Sets the colour scheme that occupies the index specified in the list of themes in the themery configuration, starting from 1. If shouldSave is true, the selection will be saved.
+- `getAvailableThemes()`: Return a table with all available themes configured in themery.
+- `setThemeByName(name:string, makePersistent:boolean)`: Set a theme based on the name specified. If makePersistent is set to true, the changes will persist even after closing neovim, loading that theme on startup. _The name refers to the name chosen by the user in the configuration and not to the name of the colorscheme_.
+- `setThemeByIndex(index:Int, makePersistent:boolean)`: Sets the colour scheme that occupies the index specified in the list of themes in the themery configuration, starting from 1. If makePersistent is set to true, the changes will persist even after closing neovim, loading that theme on startup.
 
 > [!NOTE]
 > More will be added gradually, but if you have something in mind and need more control, feel free to open an issue!
