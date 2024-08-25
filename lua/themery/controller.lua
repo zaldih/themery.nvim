@@ -152,20 +152,20 @@ end
 -- searches for the theme with the specified name, and applies the colorscheme.
 --
 -- @param name string The name of the theme to apply.
--- @param shouldSave boolean Whether to save the current state after applying the colorscheme.
+-- @param makePersistent boolean Whether to save the current state after applying the colorscheme.
 -- @usage
 -- 	 setThemeByName("monokai") -- Applies the monokai theme
 --
 -- @error Prints an error message if the theme is not found.
-local function setThemeByName(name, shouldSave)
-	shouldSave = shouldSave or false
+local function setThemeByName(name, makePersistent)
+	makePersistent = makePersistent or false
 	local themes = config.getSettings().themes
 	for index, theme in ipairs(themes) do
 		if theme.name == name or theme.colorscheme == name then
 			position = index + 1
 			selectedThemeId = index + 1
 			setColorscheme(themes[index])
-			if shouldSave then
+			if makePersistent then
 				save()
 			end
 			return
@@ -181,13 +181,13 @@ end
 -- colorscheme, the current state is saved.
 --
 -- @param index number The index of the theme to apply. Must be between 1 and the total number of available themes.
--- @param shouldSave boolean Whether to save the current state after applying the colorscheme.
+-- @param makePersistent boolean Whether to save the current state after applying the colorscheme.
 -- @usage
 --   setThemeByIndex(2)  -- Applies the theme at index 2
 --
 -- @error Prints an error message if the index is invalid.
-local function setThemeByIndex(index, shouldSave)
-	shouldSave = shouldSave or false
+local function setThemeByIndex(index, makePersistent)
+	makePersistent = makePersistent or false
 	local themes = config.getSettings().themes
 	if index < 1 or index > #themes then
 		print("Themery: Invalid index. Should be between 1 and " .. #themes .. ".")
@@ -196,7 +196,7 @@ local function setThemeByIndex(index, shouldSave)
 	position = index + 1
 	selectedThemeId = index
 	setColorscheme(themes[index])
-	if shouldSave then
+	if makePersistent then
 		save()
 	end
 end
@@ -217,6 +217,14 @@ local function getCurrentTheme()
 	end
 end
 
+--- Retrieves the available themes.
+--
+-- @return table A table containing the available themes.
+local function getAvailableThemes()
+	loadActualThemeConfig()
+	return config.getSettings().themes
+end
+
 local function bootstrap()
 	loadActualThemeConfig()
 	persistence.loadState() 
@@ -235,4 +243,5 @@ return {
 	setThemeByName = setThemeByName,
 	setThemeByIndex = setThemeByIndex,
 	getCurrentTheme = getCurrentTheme,
+	getAvailableThemes = getAvailableThemes
 }
