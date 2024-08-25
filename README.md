@@ -10,6 +10,7 @@ Themery is a plugin for Neovim written in Lua which allows you to quickly switch
 
 - [Features](#features)
 - [Motivation](#motivation)
+- [Usage](#usage)
 - [Installation](#installation)
   - [vim-plug](#vim-plug)
   - [Packer](#packer)
@@ -18,7 +19,8 @@ Themery is a plugin for Neovim written in Lua which allows you to quickly switch
     - [Minimal config](#minimal-config)
     - [Customizing names](#customizing-names)
     - [Executing code on theme apply](#executing-code-on-theme-apply)
-- [Usage](#usage)
+- [API](#API)
+  - [Example - Alternate between 2 themes](#Example---Alternate-between-2-themes)
 - [License](#license)
 
 ## Features
@@ -137,17 +139,39 @@ That is, everything inside those variables will be executed as Lua code.
 > [!IMPORTANT]  
 > Note that all code in after and before must be declared as a string. That is, wrapped between '[[' and ']]' and not as a function.
 
+## API
+
+Themery exposes several functions that you can use to interact with themes programmatically.
+
+- `getCurrentTheme()`: Return the current theme configured (a table with **index** (int) and **name** (string)), or nil.
+- `setThemeByName(name:string, shouldSave:boolean)`: Set a theme based on the name specified. If shouldSave is true, the selection will be saved. _The name refers to the name chosen by the user in the configuration and not to the name of the colorscheme_.
+- `setThemeByIndex(index:Int, shouldSave:boolean)`: Sets the colour scheme that occupies the index specified in the list of themes in the themery configuration, starting from 1. If shouldSave is true, the selection will be saved.
+
+> [!NOTE]
+> More will be added gradually, but if you have something in mind and need more control, feel free to open an issue!
+
+### Example - Alternate between 2 themes
+
+The following example illustrates how to use the above methods to switch between light and dark mode:
+
+```lua
+vim.keymap.set("n", "<leader>tt", function()
+	local themery = require("themery")
+	local currentTheme = themery.getCurrentTheme()
+	if currentTheme and currentTheme.name == "gruvbox light" then
+		themery.setThemeByName("gruvbox dark", true)
+	else
+		themery.setThemeByName("gruvbox light", true)
+	end
+end, { noremap = true })
+```
+
 ## WIP
 
 **Project under development.**
 Many things can change at any time and the plugin may not be stable.
 
 **Let me know if you have any suggestions, comments or bugs!**
-
-### To-do
-
-- Add categories (Light/Dark).
-- Expose the API to be able to switch between themes without opening the menu.
 
 In the future I would like the plugin to become a complete theme manager so that themes can be tested on the fly before installing them or browsing through a community repertoire.
 

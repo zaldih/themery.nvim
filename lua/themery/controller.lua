@@ -135,12 +135,86 @@ local function closeAndRevert()
 	window.closeWindow()
 end
 
-local function closeAndSave()
+local function save()
 	local theme = config.getSettings().themes[position - 1]
 	persistence.saveTheme(theme, position - 1)
 	selectedThemeId = position - 1
 	vim.g.theme_id = selectedThemeId
+end
+
+local function closeAndSave()
+	save()
 	window.closeWindow()
+end
+
+--- Sets the colorscheme based on the specified name.
+-- This function retrieves the list of available themes from the config,
+-- searches for the theme with the specified name, and applies the colorscheme.
+--
+-- @param name string The name of the theme to apply.
+-- @param shouldSave boolean Whether to save the current state after applying the colorscheme.
+-- @usage
+-- 	 setThemeByName("monokai") -- Applies the monokai theme
+--
+-- @error Prints an error message if the theme is not found.
+local function setThemeByName(name, shouldSave)
+	shouldSave = shouldSave or false
+	local themes = config.getSettings().themes
+	for index, theme in ipairs(themes) do
+		if theme.name == name or theme.colorscheme == name then
+			position = index + 1
+			selectedThemeId = index + 1
+			setColorscheme(themes[index])
+			if shouldSave then
+				save()
+			end
+			return
+		end
+	end
+	print("Themery: Theme \"" .. name .. "\" not found.")
+end
+
+--- Sets the colorscheme based on the specified index.
+-- This function retrieves the list of available themes from the config,
+-- validates the provided index, and applies the colorscheme at that index.
+-- If the index is out of range, an error message is printed. After setting the
+-- colorscheme, the current state is saved.
+--
+-- @param index number The index of the theme to apply. Must be between 1 and the total number of available themes.
+-- @param shouldSave boolean Whether to save the current state after applying the colorscheme.
+-- @usage
+--   setThemeByIndex(2)  -- Applies the theme at index 2
+--
+-- @error Prints an error message if the index is invalid.
+local function setThemeByIndex(index, shouldSave)
+	shouldSave = shouldSave or false
+	local themes = config.getSettings().themes
+	if index < 1 or index > #themes then
+		print("Themery: Invalid index. Should be between 1 and " .. #themes .. ".")
+		return
+	end
+	position = index + 1
+	selectedThemeId = index
+	setColorscheme(themes[index])
+	if shouldSave then
+		save()
+	end
+end
+
+--- Retrieves the current theme..
+--
+-- @return table|nil A table containing the name and index of the current theme if it exists, or nil if not.
+local function getCurrentTheme()
+	loadActualThemeConfig()
+	local themes = config.getSettings().themes
+	if themes[selectedThemeId] then
+		return {
+			name = themes[selectedThemeId].name,
+			index = position
+		}
+	else
+		return nil
+	end
 end
 
 local function bootstrap()
@@ -158,4 +232,7 @@ return {
 	loadActualThemeConfig = loadActualThemeConfig,
 	setColorscheme = setColorscheme,
 	bootstrap = bootstrap,
+	setThemeByName = setThemeByName,
+	setThemeByIndex = setThemeByIndex,
+	getCurrentTheme = getCurrentTheme,
 }
