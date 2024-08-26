@@ -121,8 +121,17 @@ local getSettings = function()
 	return configSettings
 end
 
+--- Retrieves the paths used by Themery
+-- @return table containing `state_folder_path` and `state_file_path`.
+local function getStatePaths()
+	return {
+		state_folder_path = state_folder_path,
+		state_file_path = state_file_path
+	}
+end
 return {
 	setup = setup,
 	getSettings = getSettings,
 	isConfigValid = isConfigValid,
+	getStatePaths = getStatePaths,
 }

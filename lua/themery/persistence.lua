@@ -3,9 +3,6 @@ local utils = require("themery.utils")
 local filesystem = require("themery.filesystem")
 local config = require('themery.config')
 
-local state_folder_path = vim.fn.stdpath("data") .. "/themery"
-local state_file_path = state_folder_path .. "/state.json"
-
 local need_fallback = false
 
 -- Saves the selected theme configuration to the user's config file.
@@ -25,6 +22,10 @@ local function saveTheme(theme, theme_id)
     }
 
     local json_data = vim.json.encode(data)
+
+    local statePaths = config.getStatePaths()
+    local state_folder_path = statePaths.state_folder_path
+    local state_file_path = statePaths.state_file_path
 
     -- Create plugin folder if not exist.
     local status, err = pcall(function()
@@ -61,7 +62,7 @@ end
 -- Load the state.
 local function loadState()
     local status, json_data = pcall(function()
-        return filesystem.readFromFile(state_file_path)
+        return filesystem.readFromFile(config.getStatePaths().state_file_path)
     end)
 
     if not status then
