@@ -75,14 +75,20 @@ local function loadState()
     -- Set a global variable in vim
     vim.g.theme_id = data.theme_id
 
-    execute(data.globalBeforeCode)
+    if data.globalBeforeCode then
+        execute(data.globalBeforeCode)
+    end
+
     execute(data.beforeCode)
 
     local ok = pcall(function() vim.cmd.colorscheme(data.colorscheme) end)
 
     if ok then
         execute(data.afterCode)
-        execute(data.globalAfterCode)
+
+        if data.globalAfterCode then
+            execute(data.globalAfterCode)
+        end
     else
         need_fallback = true
     end
