@@ -107,7 +107,7 @@ Let's go one step further.
 
 Sometimes it is necessary to add additional instructions to make your favourite theme work.
 
-Themery includes a before and after option that will be executed respectively before applying the theme.
+Themery includes a `before` and `after` option that will be executed respectively when applying a theme.
 
 For example, **gruvbox** uses a variable to switch between **light** and **dark** mode.
 
@@ -131,6 +131,16 @@ require("themery").setup({
     after = [[-- Same as before, but after if you need it]]
   }},
   [...]
+})
+```
+
+You may also need the same code to be executed for all changes (e.g., to reset the state). Instead of repeating the code in each entry, you can use `globalBefore` and `globalAfter`:
+
+```lua
+require("themery").setup({
+  themes = {{}},
+  globalbefore = [[ -- Executed before each.]],
+  globalAfter = [[ -- Executed after each. ]]
 })
 ```
 

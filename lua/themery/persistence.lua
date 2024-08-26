@@ -1,6 +1,8 @@
 local constants = require("themery.constants")
 local utils = require("themery.utils")
 local filesystem = require("themery.filesystem")
+local config = require('themery.config')
+
 local state_folder_path = vim.fn.stdpath("data") .. "/themery"
 local state_file_path = state_folder_path .. "/state.json"
 
@@ -10,12 +12,16 @@ local need_fallback = false
 -- @param theme table containing the theme data
 -- @param theme_id number representing the theme's ID
 local function saveTheme(theme, theme_id)
+    local settings = config.getSettings()
+
     local data = {
         version = 0,
-        beforeCode = theme.before and utils.trimStartSpaces(theme.before) or "",
         colorscheme = theme.colorscheme,
+        theme_id = theme_id,
+        beforeCode = theme.before and utils.trimStartSpaces(theme.before) or "",
         afterCode = theme.after and utils.trimStartSpaces(theme.after) or "",
-        theme_id = theme_id
+        globalBeforeCode = settings.globalBefore,
+        globalAfterCode = settings.globalBefore
     }
 
     local json_data = vim.json.encode(data)
@@ -42,6 +48,17 @@ local function saveTheme(theme, theme_id)
     print(constants.MSG_INFO.THEME_SAVED)
 end
 
+-- Load a function and then execute it.
+-- @param code string
+local function execute(code)
+    local fn, err = load(code)
+
+    if fn then
+        fn()
+    end
+end
+
+-- Load the state.
 local function loadState()
     local status, json_data = pcall(function()
         return filesystem.readFromFile(state_file_path)
@@ -57,28 +74,30 @@ local function loadState()
 
     -- Set a global variable in vim
     vim.g.theme_id = data.theme_id
-    local fn, err = load(data.beforeCode)
-    if fn then
-        fn()
+
+    if data.globalBeforeCode then
+        execute(data.globalBeforeCode)
     end
+
+    execute(data.beforeCode)
 
     local ok = pcall(function() vim.cmd.colorscheme(data.colorscheme) end)
 
-
     if ok then
-      local fn, err = load(data.afterCode)
-      if fn then
-          fn()
-      end
+        execute(data.afterCode)
+
+        if data.globalAfterCode then
+            execute(data.globalAfterCode)
+        end
     else
-      need_fallback = true
+        need_fallback = true
     end
 end
 
 -- Get if it need to fallback to other colorscheme.
 -- @return boolean
-local function getIfNeedFallback ()
-  return need_fallback
+local function getIfNeedFallback()
+    return need_fallback
 end
 
 return {
