@@ -1,4 +1,4 @@
-*themery.txt*             For NVIM v0.8.0            Last change: 2024 July 14
+*themery.txt*            For NVIM v0.8.0           Last change: 2024 August 26
 
 ==============================================================================
 Table of Contents                                  *themery-table-of-contents*
@@ -8,6 +8,7 @@ Table of Contents                                  *themery-table-of-contents*
   - Usage                                                      |themery-usage|
   - Installation                                        |themery-installation|
   - Configuration                                      |themery-configuration|
+  - API                                                          |themery-api|
   - WIP                                                          |themery-wip|
   - License                                                  |themery-license|
 Themery is a plugin for Neovim written in Lua which allows you to quickly
@@ -16,6 +17,7 @@ like VSCode. Very convenient.
 
 - |themery-features|
 - |themery-motivation|
+- |themery-usage|
 - |themery-installation|
     - |themery-vim-plug|
     - |themery-packer|
@@ -24,7 +26,8 @@ like VSCode. Very convenient.
         - |themery-minimal-config|
         - |themery-customizing-names|
         - |themery-executing-code-on-theme-apply|
-- |themery-usage|
+- |themery-api|
+    - |themery-example---alternate-between-2-themes|
 - |themery-license|
 
 
@@ -164,18 +167,44 @@ That is, everything inside those variables will be executed as Lua code.
   [!IMPORTANT] Note that all code in after and before must be declared as a
   string. That is, wrapped between '[[’ and ’]]' and not as a function.
 
+API                                                              *themery-api*
+
+Themery exposes several functions that you can use to interact with themes
+programmatically.
+
+- `getCurrentTheme()`: Return the current theme configured (a table with **index** (int) and **name** (string)), or nil.
+- `getAvailableThemes()`: Return a table with all available themes configured in themery.
+- `setThemeByName(name:string, makePersistent:boolean)`: Set a theme based on the name specified. If makePersistent is set to true, the changes will persist even after closing neovim, loading that theme on startup. _The name refers to the name chosen by the user in the configuration and not to the name of the colorscheme_.
+- `setThemeByIndex(index:Int, makePersistent:boolean)`: Sets the colour scheme that occupies the index specified in the list of themes in the themery configuration, starting from 1. If makePersistent is set to true, the changes will persist even after closing neovim, loading that theme on startup.
+
+
+  [!NOTE] More will be added gradually, but if you have something in mind and
+  need more control, feel free to open an issue!
+
+EXAMPLE - ALTERNATE BETWEEN 2 THEMES ~
+
+The following example illustrates how to use the above methods to switch
+between light and dark mode:
+
+>lua
+    vim.keymap.set("n", "<leader>tt", function()
+        local themery = require("themery")
+        local currentTheme = themery.getCurrentTheme()
+        if currentTheme and currentTheme.name == "gruvbox light" then
+            themery.setThemeByName("gruvbox dark", true)
+        else
+            themery.setThemeByName("gruvbox light", true)
+        end
+    end, { noremap = true })
+<
+
+
 WIP                                                              *themery-wip*
 
 **Project under development.** Many things can change at any time and the
 plugin may not be stable.
 
 **Let me know if you have any suggestions, comments or bugs!**
-
-
-TO-DO ~
-
-- Add categories (Light/Dark).
-- Expose the API to be able to switch between themes without opening the menu.
 
 In the future I would like the plugin to become a complete theme manager so
 that themes can be tested on the fly before installing them or browsing through
