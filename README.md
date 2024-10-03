@@ -65,6 +65,20 @@ Plug 'zaldih/themery.nvim'
 use 'zaldih/themery.nvim'
 ```
 
+### lazy.nvim
+
+```lua
+return {
+    "zaldih/themery.nvim",
+    lazy = false,
+    config = function()
+      require("themery").setup({
+        -- add the config here
+      })
+    end
+  }
+```
+
 ## Configuration
 
 Configuration is simple and intuitive.
