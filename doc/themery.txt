@@ -1,4 +1,4 @@
-*themery.txt*            For NVIM v0.8.0           Last change: 2024 August 26
+*themery.txt*           For NVIM v0.8.0           Last change: 2024 October 04
 
 ==============================================================================
 Table of Contents                                  *themery-table-of-contents*
@@ -82,6 +82,21 @@ PACKER ~
 
 >
     use 'zaldih/themery.nvim'
+<
+
+
+LAZY.NVIM ~
+
+>lua
+    return {
+        "zaldih/themery.nvim",
+        lazy = false,
+        config = function()
+          require("themery").setup({
+            -- add the config here
+          })
+        end
+      }
 <
 
 
