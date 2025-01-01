@@ -153,7 +153,7 @@ You may also need the same code to be executed for all changes (e.g., to reset t
 ```lua
 require("themery").setup({
   themes = {{}},
-  globalbefore = [[ -- Executed before each.]],
+  globalBefore = [[ -- Executed before each.]],
   globalAfter = [[ -- Executed after each. ]]
 })
 ```
