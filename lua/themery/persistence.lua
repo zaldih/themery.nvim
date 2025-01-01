@@ -18,7 +18,7 @@ local function saveTheme(theme, theme_id)
         beforeCode = theme.before and utils.trimStartSpaces(theme.before) or "",
         afterCode = theme.after and utils.trimStartSpaces(theme.after) or "",
         globalBeforeCode = settings.globalBefore,
-        globalAfterCode = settings.globalBefore
+        globalAfterCode = settings.globalAfter
     }
 
     local json_data = vim.json.encode(data)
