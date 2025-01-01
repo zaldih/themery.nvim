@@ -1,4 +1,4 @@
-*themery.txt*           For NVIM v0.8.0           Last change: 2024 October 04
+*themery.txt*           For NVIM v0.8.0           Last change: 2025 January 01
 
 ==============================================================================
 Table of Contents                                  *themery-table-of-contents*
@@ -183,7 +183,7 @@ the state). Instead of repeating the code in each entry, you can use
 >lua
     require("themery").setup({
       themes = {{}},
-      globalbefore = [[ -- Executed before each.]],
+      globalBefore = [[ -- Executed before each.]],
       globalAfter = [[ -- Executed after each. ]]
     })
 <
