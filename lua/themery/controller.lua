@@ -27,6 +27,20 @@ local function loadActualThemeConfig()
 end
 
 local function setColorscheme(theme)
+	local globalBefore = config.getSettings().globalBefore
+	local globalAfter = config.getSettings().globalAfter
+
+	if globalBefore then
+		local fn, err = load(globalBefore)
+		if err then
+			print("Themery error: " .. err)
+			return false
+		end
+		if fn then
+			fn()
+		end
+	end
+
 	if theme.before then
 		local fn, err = load(theme.before)
 		if err then
@@ -46,6 +60,17 @@ local function setColorscheme(theme)
 		-- Restore previus
 		vim.cmd("colorscheme " .. config.getSettings().themes[selectedThemeId])
 		return false
+	end
+
+	if globalAfter then
+		local fn, err = load(globalAfter)
+		if err then
+			print("Themery error: " .. err)
+			return false
+		end
+		if fn then
+			fn()
+		end
 	end
 
 	if theme.after then
